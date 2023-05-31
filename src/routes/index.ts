@@ -3,7 +3,13 @@ import helmet from "helmet";
 import ErrorMiddleware from "@/middlewares/error.middleware";
 import { Controller } from "@/infrastructure/interfaces";
 import userRoutes from "./user.routes";
-export default function Router(UserController: Controller): express.Router {
+import restaurantRoutes from "./restaurant.routes";
+export default function Router(
+  UserController: Controller,
+  RestaurantController: Controller,
+  ProductController: Controller,
+  OrderController: Controller
+): express.Router {
   const router = express.Router();
   const apiRoutes = express.Router();
 
@@ -13,6 +19,9 @@ export default function Router(UserController: Controller): express.Router {
     .use(helmet());
 
   apiRoutes.use("/users", userRoutes(UserController));
+  apiRoutes.use("/restaurants", restaurantRoutes(RestaurantController));
+  apiRoutes.use("/products", restaurantRoutes(ProductController));
+  apiRoutes.use("/orders", restaurantRoutes(OrderController));
 
   router.use("/api/v1", apiRoutes);
 

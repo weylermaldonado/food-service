@@ -25,7 +25,7 @@ const AdditionalSchema = new Schema(
   { timestamps: true }
 );
 
-const ProductSchema = new Schema(
+export const ProductSchema = new Schema(
   {
     uuid: {
       type: String,

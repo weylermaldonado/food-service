@@ -1,6 +1,6 @@
 import { ORDER_STATUS } from "@/shared/enums";
 import { Schema, model } from "mongoose";
-import { Product } from "./product.model";
+import { ProductSchema } from "./product.model";
 
 const OrderSchema = new Schema(
   {
@@ -18,7 +18,7 @@ const OrderSchema = new Schema(
       type: String,
       required: true,
     },
-    products: [Product],
+    products: [ProductSchema],
     total: {
       type: Number,
       required: true,
