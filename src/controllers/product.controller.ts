@@ -1,4 +1,4 @@
-import { ProductDTO } from "@/dto/product.dto";
+import { AdditionalDTO, ProductDTO } from "@/dto/product.dto";
 import {
   Controller,
   IProductService,
@@ -7,8 +7,10 @@ import {
 import { BaseResponse } from "@/infrastructure/response/base.response";
 import { TYPES } from "@/infrastructure/types";
 import {
+  CreateProductAdditionalRequest,
   CreateProductRequest,
   FilterProductRequest,
+  UpdateProductAdditionalRequest,
   UpdateProductRequest,
 } from "@/infrastructure/validators/product.validator";
 import { NextFunction, Request, Response } from "express";
@@ -128,6 +130,107 @@ export class ProductController implements Controller {
       await this.productService.create(productDTO.toPrimitive());
 
       return res.send(BaseResponse.created({ message: "Product created" }));
+    } catch (error: any) {
+      next(BaseResponse.internalServerError(error.message));
+    }
+  }
+
+  // Product additional
+
+  async addProductAdditional(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<any> {
+    try {
+      // Validate request
+      const { body, params } = req;
+      const isValidRequest = CreateProductAdditionalRequest.validate(body);
+      if (!isValidRequest.success) {
+        return next(BaseResponse.unprocessableEntity(isValidRequest.details));
+      }
+
+      // DTO Mapping
+      const additionalDTO = AdditionalDTO.from(body);
+      additionalDTO.generateID();
+      console.info(additionalDTO.pruneFields());
+      // Save user
+      await this.productService.addProductAdditional(
+        params.productId,
+        additionalDTO.pruneFields()
+      );
+
+      return res.send(
+        BaseResponse.created({ message: "Product additional created" })
+      );
+    } catch (error: any) {
+      next(BaseResponse.internalServerError(error.message));
+    }
+  }
+
+  async updateProductAdditional(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<any> {
+    try {
+      // Validate request
+      const { body, params } = req;
+      const isValidRequest = UpdateProductAdditionalRequest.validate(body);
+      if (!isValidRequest.success) {
+        return next(BaseResponse.unprocessableEntity(isValidRequest.details));
+      }
+
+      // DTO Mapping
+      const additionalDTO = AdditionalDTO.from(body);
+
+      // Save additional
+      let result = await this.productService.updateProductAdditional(
+        params.productId,
+        params.additionalId,
+        additionalDTO.pruneFields()
+      );
+
+      if (!result) {
+        return next(
+          BaseResponse.recordNotFound(
+            `Additional ${params.additionalId} not found`
+          )
+        );
+      }
+      result = result.additional.filter(
+        (additional: any) => additional.uuid === params.additionalId
+      );
+
+      const additional = AdditionalDTO.from(result[0]);
+
+      return res.send(BaseResponse.ok(additional.toPrimitive()));
+    } catch (error: any) {
+      next(BaseResponse.internalServerError(error.message));
+    }
+  }
+
+  async deleteProductAdditional(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<any> {
+    try {
+      // Validate request
+      const { params } = req;
+      if (!params.productId || !params.additionalId) {
+        return next(BaseResponse.unprocessableEntity("Missing IDs to delete"));
+      }
+
+      // Save user
+      await this.productService.deleteProductAdditional(
+        params.productId,
+        params.additionalId
+      );
+
+      return res.send(
+        BaseResponse.noContent({ message: "Product additional deleted" })
+      );
     } catch (error: any) {
       next(BaseResponse.internalServerError(error.message));
     }

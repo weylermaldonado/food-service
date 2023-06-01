@@ -1,8 +1,8 @@
-import { Controller } from "@/infrastructure/interfaces";
+import { Controller, IProductController } from "@/infrastructure/interfaces";
 import isSuperUser from "@/middlewares/admin.middleware";
 import auth from "@/middlewares/jwt.middleware";
 import { Router } from "express";
-export default function productRoutes(ProductController: Controller) {
+export default function productRoutes(ProductController: IProductController) {
   const router = Router();
   router.get("/:productId", [auth, isSuperUser], (...args: any[]) =>
     ProductController.get(...args)
@@ -16,6 +16,23 @@ export default function productRoutes(ProductController: Controller) {
   );
   router.delete("/:productId", [auth, isSuperUser], (...args: any[]) =>
     ProductController.delete(...args)
+  );
+
+  // Additional
+  router.patch(
+    "/:productId/additional",
+    [auth, isSuperUser],
+    (...args: any[]) => ProductController.addProductAdditional(...args)
+  );
+  router.patch(
+    "/:productId/additional/:additionalId",
+    [auth, isSuperUser],
+    (...args: any[]) => ProductController.updateProductAdditional(...args)
+  );
+  router.delete(
+    "/:productId/additional/:additionalId",
+    [auth, isSuperUser],
+    (...args: any[]) => ProductController.deleteProductAdditional(...args)
   );
 
   return router;

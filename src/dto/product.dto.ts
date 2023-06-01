@@ -1,15 +1,15 @@
 import { PRODUCT_CATEGORIES } from "@/shared/enums";
 import { randomUUID } from "crypto";
 
-class AdditionalDTO {
+export class AdditionalDTO {
   constructor(
     private name: string,
     private price: number,
-    private available: boolean = true,
+    private available?: boolean,
     private uuid?: string
   ) {
-    this.validatePrice();
-    this.validateName();
+    if (price) this.validatePrice();
+    if (name) this.validateName();
   }
 
   private validateName() {
@@ -29,8 +29,30 @@ class AdditionalDTO {
     return this.uuid!;
   }
 
+  toPrimitive() {
+    return {
+      uuid: this.uuid,
+      price: this.price,
+      available: this.available,
+      name: this.name,
+    };
+  }
+
+  pruneFields() {
+    const obj = Object.fromEntries(
+      Object.entries(this.toPrimitive()).filter(([_, v]) => v)
+    );
+    if ("available" in this) obj.available = this.available;
+    return obj;
+  }
+
   static from(data: any) {
-    return new AdditionalDTO(data.name, data.price, data.availability);
+    return new AdditionalDTO(
+      data.name,
+      data.price,
+      data.availability || data.available,
+      data.uuid
+    );
   }
 }
 
@@ -72,7 +94,7 @@ export class ProductDTO {
     const additionals = data.additional
       ? data.additional.map((modifier: any) => {
           const additional = AdditionalDTO.from(modifier);
-          additional.generateID();
+          modifier.uuid ? modifier.uuid : additional.generateID();
           return additional;
         })
       : [];

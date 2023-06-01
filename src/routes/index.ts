@@ -1,14 +1,18 @@
 import express from "express";
 import helmet from "helmet";
 import ErrorMiddleware from "@/middlewares/error.middleware";
-import { Controller, IUserController } from "@/infrastructure/interfaces";
+import {
+  Controller,
+  IProductController,
+  IUserController,
+} from "@/infrastructure/interfaces";
 import userRoutes from "./user.routes";
 import restaurantRoutes from "./restaurant.routes";
 import productRoutes from "./product.routes";
 export default function Router(
   UserController: IUserController,
   RestaurantController: Controller,
-  ProductController: Controller,
+  ProductController: IProductController,
   OrderController: Controller
 ): express.Router {
   const router = express.Router();

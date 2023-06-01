@@ -25,6 +25,15 @@ export const CreateProductAdditionalRequest = Record({
   availability: Boolean,
 });
 
+export const UpdateProductAdditionalRequest = Record({
+  name: String.withConstraint((n) => n.length <= 40, {
+    name: "Maximum 40 chars per additional name",
+  }).optional(),
+  price: Number.withConstraint((n) => n >= 0, {
+    name: "Additional Price should be grater or equal than 0",
+  }).optional(),
+  availability: Boolean.optional(),
+});
 export const CreateProductRequest = Record({
   name: String.withConstraint((n) => n.length <= 40, {
     name: "Maximum 40 chars per Product name",

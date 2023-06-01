@@ -60,4 +60,33 @@ export interface IUserController extends Controller {
 
 export interface IProductService extends Service {
   countWithFilter(filter: any): Promise<any>;
+  addProductAdditional(uuid: string, entity: any): Promise<any>;
+  updateProductAdditional(
+    productUUID: string,
+    additionalUUID: string,
+    entity: any
+  ): Promise<any>;
+  deleteProductAdditional(
+    productUUID: string,
+    additionalUUID: string
+  ): Promise<any>;
+}
+
+export interface IProductRepository extends Repository {
+  addProductAdditional(uuid: string, entity: any): Promise<any>;
+  updateProductAdditional(
+    productUUID: string,
+    additionalUUID: string,
+    entity: any
+  ): Promise<any>;
+  deleteProductAdditional(
+    productUUID: string,
+    additionalUUID: string
+  ): Promise<any>;
+}
+
+export interface IProductController extends Controller {
+  addProductAdditional(...args: any): Promise<any>;
+  updateProductAdditional(...args: any): Promise<any>;
+  deleteProductAdditional(...args: any): Promise<any>;
 }
