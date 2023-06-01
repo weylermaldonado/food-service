@@ -5,10 +5,15 @@ import BaseService from "./base.service";
 @injectable()
 class ProductService extends BaseService {
   constructor(
-    @inject(TYPES.Repository) private readonly productRepository: Repository
+    @inject(TYPES.ProductRepository)
+    private readonly productRepository: Repository
   ) {
     super(productRepository);
     this.productRepository = productRepository;
+  }
+
+  async countWithFilter(filter: any) {
+    return this.productRepository.countWithFilter(filter);
   }
 }
 export default ProductService;

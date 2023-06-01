@@ -18,8 +18,10 @@ class BaseRepository implements Repository {
     orderBy = "_id"
   ) {
     const skips = pageSize * (pageNum - 1);
+    const filter = propName && value ? { [propName]: value } : {};
+
     return await this.model
-      .find({ [propName]: value })
+      .find(filter)
       .sort(`-${orderBy}`)
       .skip(skips)
       .limit(pageSize);
@@ -33,7 +35,15 @@ class BaseRepository implements Repository {
     });
   }
   async delete(id: any) {
-    return await this.model.findByIdAndDelete(id);
+    return await this.model.findOneAndRemove({ uuid: id });
+  }
+
+  async count() {
+    return this.model.count();
+  }
+
+  async countWithFilter(filter: any) {
+    return this.model.count(filter);
   }
 }
 export default BaseRepository;

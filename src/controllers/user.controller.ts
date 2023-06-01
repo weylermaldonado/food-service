@@ -7,6 +7,7 @@ import {
   LoginUserRequest,
   UpdateUserRequest,
 } from "@/infrastructure/validators/user.validator";
+import { USER_ROLE } from "@/shared/enums";
 import { NextFunction, Request, Response } from "express";
 import { inject } from "inversify";
 import { provide } from "inversify-binding-decorators";
@@ -25,19 +26,20 @@ export class UserController implements Controller {
       }
 
       // Mapping to DTO
-      const userDTO = UserDTO.from(body);
-      const user = await this.userService.getByEmail(userDTO.getEmail());
+      const user = await this.userService.getByEmail(body.email);
       if (!user) {
         return next(BaseResponse.recordNotFound("User not found."));
       }
+      const userDTO = UserDTO.from(user);
       const isValidPassword = await userDTO.passwordMatch(
-        user.password,
-        userDTO.getPassword()
+        userDTO.getPassword(),
+        body.password
       );
 
       if (!isValidPassword) {
         return next(BaseResponse.unauthorized("Password does't match"));
       }
+
       const jwt = await this.userService.generateToken(
         userDTO.getID(),
         userDTO.getRole()
@@ -87,6 +89,29 @@ export class UserController implements Controller {
       }
 
       return res.send(BaseResponse.ok({ message: "User deactivated" }));
+    } catch (error: any) {
+      next(BaseResponse.internalServerError(error.message));
+    }
+  }
+
+  async createSuperUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { body } = req;
+      // Validate request
+      const isValidRequest = CreateUserRequest.validate(body);
+      if (!isValidRequest.success) {
+        return next(BaseResponse.unprocessableEntity(isValidRequest.details));
+      }
+
+      const userDTO = UserDTO.from(body);
+      await userDTO.hashPassword(body.password);
+      userDTO.generateID();
+      userDTO.setRole(USER_ROLE.SUPER_ADMIN);
+
+      // Save user
+      await this.userService.create(userDTO.toPrimitive());
+
+      return res.send(BaseResponse.ok({ message: "SuperUser created" }));
     } catch (error: any) {
       next(BaseResponse.internalServerError(error.message));
     }

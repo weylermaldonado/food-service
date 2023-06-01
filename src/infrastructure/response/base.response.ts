@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   InternalServerErrorException,
+  MethodNotAllowedException,
   NotFoundException,
   UnauthorizedException,
   UnprocessableEntityException,
@@ -44,8 +45,11 @@ export class BaseResponse {
     return new UnauthorizedException(data);
   }
 
-  static methodNotAllowed(data: any, requestId?: string): BaseResponse {
-    return new BaseResponse(false, 403, data);
+  static methodNotAllowed(
+    data: string,
+    requestId?: string
+  ): MethodNotAllowedException {
+    return new MethodNotAllowedException(data);
   }
   static recordNotFound(data: string, requestId?: string): NotFoundException {
     return new NotFoundException(data);
@@ -81,5 +85,16 @@ export class BaseResponse {
 
   setRequestId(id: string): void {
     this.requestId = id;
+  }
+
+  setPagination(totalRecords: number, pageNum?: string, pageSize?: string) {
+    const page = Number(pageNum) || 1;
+    const size = Number(pageSize) || 5;
+    this.pagination = {
+      page_number: page,
+      page_size: size,
+      page_total: Math.ceil(totalRecords / size),
+      total_records: totalRecords,
+    };
   }
 }

@@ -15,8 +15,6 @@ export const CreateUserRequest = Record({
   password: String.withConstraint((n) => n.length > 8, {
     name: "8 characters at least",
   }),
-  restaurant_id: String.optional(),
-  role: UserRoles.optional(),
   name: String,
 });
 

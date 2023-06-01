@@ -7,11 +7,20 @@ export class UserDTO {
     private email: string,
     private password: string,
     private restaurantId: string | null,
-    private role: USER_ROLE = USER_ROLE.VISITOR,
+    private role: USER_ROLE,
     private name: string,
     private active: boolean = true,
     private uuid?: string
   ) {}
+
+  setRole(role: USER_ROLE) {
+    this.role = role;
+  }
+
+  setRestaurantId(id: string) {
+    this.restaurantId = id;
+  }
+
   getEmail(): string {
     return this.email;
   }
@@ -58,8 +67,10 @@ export class UserDTO {
       data.email,
       data.password,
       data.restaurant_id,
-      data.role,
-      data.name
+      data.user_role,
+      data.name,
+      data.active,
+      data.uuid
     );
   }
 }

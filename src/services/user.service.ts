@@ -13,7 +13,7 @@ class UserService extends BaseService {
     this.userRepository = userRepository;
   }
 
-  async generateToken(uuid: string, role: USER_ROLE) {
+  async generateToken(uuid: string, role: string) {
     const authToken = await this.jwtService.sign({ uuid, role });
     return authToken.getToken();
   }

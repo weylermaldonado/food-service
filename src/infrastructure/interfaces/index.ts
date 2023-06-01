@@ -26,6 +26,8 @@ export interface Repository {
   update(id: string, entity: any): Promise<any>;
   delete(id: string): Promise<any>;
   create(entity: any): Promise<any>;
+  count(): Promise<any>;
+  countWithFilter(filter: any): Promise<any>;
 }
 
 export interface Controller {
@@ -50,4 +52,12 @@ export interface IUserService extends Service {
 export interface IUserRepository extends Repository {
   getByUUID(uuid: string): Promise<any>;
   getByEmail(email: string): Promise<any>;
+}
+
+export interface IUserController extends Controller {
+  createSuperUser(...args: any): Promise<any>;
+}
+
+export interface IProductService extends Service {
+  countWithFilter(filter: any): Promise<any>;
 }

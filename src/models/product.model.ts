@@ -1,4 +1,4 @@
-import { ORDER_CATEGORIES } from "@/shared/enums";
+import { PRODUCT_CATEGORIES } from "@/shared/enums";
 import { Schema, model } from "mongoose";
 
 const AdditionalSchema = new Schema(
@@ -33,6 +33,9 @@ export const ProductSchema = new Schema(
       unique: true,
       index: true,
     },
+    img: {
+      type: String,
+    },
     name: {
       type: String,
       required: true,
@@ -43,7 +46,7 @@ export const ProductSchema = new Schema(
     },
     category: {
       type: String,
-      enum: ORDER_CATEGORIES,
+      enum: PRODUCT_CATEGORIES,
     },
     notes: {
       type: String,
@@ -51,6 +54,7 @@ export const ProductSchema = new Schema(
     available: {
       type: Boolean,
       required: true,
+      default: true,
     },
     additional: [AdditionalSchema],
   },

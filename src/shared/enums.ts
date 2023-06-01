@@ -9,7 +9,7 @@ export enum ORDER_STATUS {
   CANCELLED = "cancelled",
 }
 
-export enum ORDER_CATEGORIES {
+export enum PRODUCT_CATEGORIES {
   SNACK = "snack",
   MAIN_COURSE = "main_course",
   DESSERT = "dessert",
