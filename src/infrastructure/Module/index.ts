@@ -1,5 +1,10 @@
 import { UserController } from "@/controllers/user.controller";
-import { Controller, Repository, Service } from "@/infrastructure/interfaces";
+import {
+  Controller,
+  JWT,
+  Repository,
+  Service,
+} from "@/infrastructure/interfaces";
 import Router from "@/routes";
 import { TYPES } from "@/infrastructure/types";
 import { Router as IRouter } from "express";
@@ -20,6 +25,8 @@ import { OrderController } from "@/controllers/order.controller";
 import OrderService from "@/services/order.service";
 import OrderRepository from "@/repositories/order.repository";
 import { Order } from "@/models/order.model";
+import { JSONWebToken } from "../auth/jsonwebtoken.jwt";
+import { JWT_CONFIG } from "../config";
 
 export const UserContainerModule = new ContainerModule(
   (bind: interfaces.Bind, unbind: interfaces.Unbind) => {
@@ -82,5 +89,13 @@ export const OrderContainerModule = new ContainerModule(
       .to(OrderRepository)
       .inSingletonScope();
     bind<Model<any>>(TYPES.Order).toConstantValue(Order);
+  }
+);
+
+export const CommonContainerModule = new ContainerModule(
+  (bind: interfaces.Bind, unbind: interfaces.Unbind) => {
+    bind<JWT>(TYPES.JWT).toDynamicValue((context: interfaces.Context) => {
+      return new JSONWebToken(JWT_CONFIG.secretKey);
+    });
   }
 );

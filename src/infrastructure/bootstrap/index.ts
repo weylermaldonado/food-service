@@ -4,6 +4,7 @@ import { startExpress } from "@/infrastructure/framework/express.framework";
 import { mongooseConnection } from "@/infrastructure/database/mongoose.database";
 import { AppDependencies } from "@/infrastructure/d-injection/config";
 import {
+  CommonContainerModule,
   OrderContainerModule,
   ProductContainerModule,
   RestaurantContainerModule,
@@ -19,7 +20,8 @@ export class SharedBootstrap implements StartModule {
         UserContainerModule,
         RestaurantContainerModule,
         ProductContainerModule,
-        OrderContainerModule
+        OrderContainerModule,
+        CommonContainerModule
       );
 
       // database connection

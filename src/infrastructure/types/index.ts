@@ -26,6 +26,9 @@ const TYPES = {
   OrderController: Symbol.for("OrderController"),
   OrderService: Symbol.for("OrderService"),
   OrderRepository: Symbol.for("OrderRepository"),
+
+  // JWT
+  JWT: Symbol.for("JWT"),
 };
 
 export { TYPES };

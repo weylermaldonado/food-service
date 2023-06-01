@@ -1,14 +1,15 @@
+import { HttpException } from "@/shared/errors/http.error";
 import { NextFunction, Request, Response } from "express";
 
 export default function ErrorMiddleware(
-  err: Error,
+  err: HttpException,
   req: Request,
   res: Response,
   next: NextFunction
 ) {
-  const httpStatus = 500;
-  return res.status(httpStatus).send({
-    status: httpStatus,
+  return res.status(err.httpCode).send({
+    status: err.httpCode,
     message: err.message || "Internal server error",
+    details: err.validationErrors,
   });
 }

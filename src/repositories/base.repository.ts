@@ -28,7 +28,9 @@ class BaseRepository implements Repository {
     return await this.model.create(entity);
   }
   async update(id: any, entity: any) {
-    return await this.model.findByIdAndUpdate(id, entity, { new: true });
+    return await this.model.findOneAndUpdate({ uuid: id }, entity, {
+      new: true,
+    });
   }
   async delete(id: any) {
     return await this.model.findByIdAndDelete(id);

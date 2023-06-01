@@ -20,7 +20,7 @@ const UserSchema = new Schema(
       type: String,
       required: true,
     },
-    restaurant: {
+    restaurant_id: {
       type: String,
     },
     user_role: {

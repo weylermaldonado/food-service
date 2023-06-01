@@ -25,3 +25,11 @@ export const MONGO_DB = {
   username: env.MONGODB_USERNAME,
   password: env.MONGODB_PASSWORD,
 };
+
+export const AUTH = {
+  salt: env.SECRET_SALT,
+};
+
+export const JWT_CONFIG = {
+  secretKey: env.JWT_SECRET_KEY,
+};

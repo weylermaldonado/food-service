@@ -9,5 +9,13 @@ class UserRepository extends BaseRepository {
     super(user);
     user = this.user;
   }
+
+  async getByUUID(uuid: string) {
+    return this.user.findOne({ uuid });
+  }
+
+  async getByEmail(email: string) {
+    return this.user.findOne({ email, active: true });
+  }
 }
 export default UserRepository;
