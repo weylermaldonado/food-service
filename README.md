@@ -6,28 +6,16 @@ The service-oriented architecture repository is part of an arrangement to store 
 
 Implement a REST API in NodeJs 16.x that handles CRUD requests.
 
-#### Example of a user
 
-```bash
-{
-    "email": "janet.weaver@reqres.in",
-    "name": "Janet Weaver",
-    "phone": "435594689",
-    "company": "StatusCode Weekly"
-}
-```
-
-- Create a Docerized instance of this database. Write the NoSQL and a dockerfile to launch the DB, and create the collections required.
+- Create a Dockerized instance of this database. Write the NoSQL and a dockerfile to launch the DB, and create the collections required.
 
 ## Related Links
 
-- Postman Collection: https://www.getpostman.com/collections/a6da8f4b09a4a791298a.
-
+- Postman Collection: https://www.postman.com/restless-shuttle-566554/workspace/my-workspace/collection/27103827-552776d6-f594-4e5f-af51-6b98a3799ed7?action=share&creator=27103827
 ## Installation
 
 ```bash
-git clone https://github.com/jhoncbernal/RepositoryService
-cd repository-service
+cd food-service
 yarn
 ```
 
@@ -86,7 +74,7 @@ yarn serve
 
 ## Documentation
 
-https://www.getpostman.com/collections/b1753be0afa7a703fe5b
+https://www.postman.com/restless-shuttle-566554/workspace/my-workspace/collection/27103827-552776d6-f594-4e5f-af51-6b98a3799ed7?action=share&creator=27103827
 
 ## Production
 

@@ -1,6 +1,7 @@
 import { UserController } from "@/controllers/user.controller";
 import {
   Controller,
+  CustomLogger,
   JWT,
   Repository,
   Service,
@@ -13,10 +14,6 @@ import { Model } from "mongoose";
 import { User } from "@/models/user.model";
 import UserRepository from "@/repositories/user.repository";
 import UserService from "@/services/user.service";
-import { RestaurantController } from "@/controllers/restaurant.controller";
-import RestaurantService from "@/services/restaurant.service";
-import RestaurantRepository from "@/repositories/restaurant.repository";
-import { Restaurant } from "@/models/restaurant.model";
 import { ProductController } from "@/controllers/product.controller";
 import ProductService from "@/services/product.service";
 import ProductRepository from "@/repositories/product.repository";
@@ -27,6 +24,7 @@ import OrderRepository from "@/repositories/order.repository";
 import { Order } from "@/models/order.model";
 import { JSONWebToken } from "../auth/jsonwebtoken.jwt";
 import { JWT_CONFIG } from "../config";
+import { WatchLogger } from "../logger/winston.logger";
 
 export const UserContainerModule = new ContainerModule(
   (bind: interfaces.Bind, unbind: interfaces.Unbind) => {
@@ -34,9 +32,6 @@ export const UserContainerModule = new ContainerModule(
       (context: interfaces.Context): IRouter => {
         return Router(
           context.container.get<UserController>(TYPES.UserController),
-          context.container.get<RestaurantController>(
-            TYPES.RestaurantController
-          ),
           context.container.get<ProductController>(TYPES.ProductController),
           context.container.get<OrderController>(TYPES.OrderController)
         );
@@ -48,21 +43,6 @@ export const UserContainerModule = new ContainerModule(
     bind<Service>(TYPES.Service).to(UserService).inSingletonScope();
     bind<Repository>(TYPES.Repository).to(UserRepository).inSingletonScope();
     bind<Model<any>>(TYPES.User).toConstantValue(User);
-  }
-);
-
-export const RestaurantContainerModule = new ContainerModule(
-  (bind: interfaces.Bind, unbind: interfaces.Unbind) => {
-    bind<Controller>(TYPES.RestaurantController)
-      .to(RestaurantController)
-      .inSingletonScope();
-    bind<Service>(TYPES.RestaurantService)
-      .to(RestaurantService)
-      .inSingletonScope();
-    bind<Repository>(TYPES.RestaurantRepository)
-      .to(RestaurantRepository)
-      .inSingletonScope();
-    bind<Model<any>>(TYPES.Restaurant).toConstantValue(Restaurant);
   }
 );
 
@@ -97,5 +77,6 @@ export const CommonContainerModule = new ContainerModule(
     bind<JWT>(TYPES.JWT).toDynamicValue((context: interfaces.Context) => {
       return new JSONWebToken(JWT_CONFIG.secretKey);
     });
+    bind<CustomLogger>(TYPES.Logger).to(WatchLogger);
   }
 );

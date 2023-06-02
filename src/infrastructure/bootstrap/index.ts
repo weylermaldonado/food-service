@@ -7,7 +7,6 @@ import {
   CommonContainerModule,
   OrderContainerModule,
   ProductContainerModule,
-  RestaurantContainerModule,
   UserContainerModule,
 } from "@/infrastructure/Module";
 import { TYPES } from "@/infrastructure/types";
@@ -18,7 +17,6 @@ export class SharedBootstrap implements StartModule {
     try {
       AppContainer.load(
         UserContainerModule,
-        RestaurantContainerModule,
         ProductContainerModule,
         OrderContainerModule,
         CommonContainerModule

@@ -7,11 +7,10 @@ import {
   IUserController,
 } from "@/infrastructure/interfaces";
 import userRoutes from "./user.routes";
-import restaurantRoutes from "./restaurant.routes";
 import productRoutes from "./product.routes";
+import orderRoutes from "./order.routes";
 export default function Router(
   UserController: IUserController,
-  RestaurantController: Controller,
   ProductController: IProductController,
   OrderController: Controller
 ): express.Router {
@@ -24,9 +23,8 @@ export default function Router(
     .use(helmet());
 
   apiRoutes.use("/users", userRoutes(UserController));
-  apiRoutes.use("/restaurants", restaurantRoutes(RestaurantController));
   apiRoutes.use("/products", productRoutes(ProductController));
-  apiRoutes.use("/orders", restaurantRoutes(OrderController));
+  apiRoutes.use("/orders", orderRoutes(OrderController));
 
   router.use("/api/v1", apiRoutes);
 

@@ -1,8 +1,8 @@
 import { AdditionalDTO, ProductDTO } from "@/dto/product.dto";
 import {
   Controller,
+  CustomLogger,
   IProductService,
-  Service,
 } from "@/infrastructure/interfaces";
 import { BaseResponse } from "@/infrastructure/response/base.response";
 import { TYPES } from "@/infrastructure/types";
@@ -21,7 +21,8 @@ import { provide } from "inversify-binding-decorators";
 export class ProductController implements Controller {
   constructor(
     @inject(TYPES.ProductService)
-    private readonly productService: IProductService
+    private readonly productService: IProductService,
+    @inject(TYPES.Logger) private readonly logger: CustomLogger
   ) {}
   async get(req: Request, res: Response, next: NextFunction): Promise<any> {
     return res.send({ message: "Hello" });
@@ -30,6 +31,11 @@ export class ProductController implements Controller {
     try {
       // Validate request
       const { query } = req;
+      this.logger.trace(
+        `[${
+          ProductController.name
+        } - Get menu] Incoming payload -> ${JSON.stringify(query)}`
+      );
       const isValidRequest = FilterProductRequest.validate(query);
       if (!isValidRequest.success) {
         return next(BaseResponse.unprocessableEntity(isValidRequest.details));
@@ -40,7 +46,8 @@ export class ProductController implements Controller {
       const [prop, value] = filter.split(":");
       const sort: any = query.sortBy ?? null;
       const countFilter = prop && value ? { [prop]: value } : {};
-
+      this.logger.trace(`Filters applied -> ${JSON.stringify(countFilter)}`);
+      this.logger.trace(`Sort applied -> ${sort}`);
       // Calling the service
       const menu = await this.productService.getAll(
         prop,
@@ -65,6 +72,9 @@ export class ProductController implements Controller {
 
       return res.send(response);
     } catch (error: any) {
+      this.logger.error(
+        `[${ProductController.name}] Error -> ${JSON.stringify(error)}`
+      );
       next(BaseResponse.internalServerError(error.message));
     }
   }
@@ -72,6 +82,11 @@ export class ProductController implements Controller {
     try {
       // Validate request
       const { body, params } = req;
+      this.logger.trace(
+        `[${
+          ProductController.name
+        } - Update product] Incoming payload -> ${JSON.stringify(body)}`
+      );
       const isValidRequest = UpdateProductRequest.validate(body);
       if (!isValidRequest.success) {
         return next(BaseResponse.unprocessableEntity(isValidRequest.details));
@@ -93,6 +108,9 @@ export class ProductController implements Controller {
 
       return res.send(BaseResponse.ok(ProductDTO.from(product)));
     } catch (error: any) {
+      this.logger.error(
+        `[${ProductController.name}] Error -> ${JSON.stringify(error)}`
+      );
       next(BaseResponse.internalServerError(error.message));
     }
   }
@@ -100,6 +118,9 @@ export class ProductController implements Controller {
     try {
       // Validate request
       const { productId } = req.params;
+      this.logger.trace(
+        `[${ProductController.name} - Delete product] Incoming payload -> ${productId}`
+      );
       if (!productId) {
         return next(BaseResponse.unprocessableEntity("Missing product ID"));
       }
@@ -110,6 +131,9 @@ export class ProductController implements Controller {
         BaseResponse.noContent(`Product ${productId} deleted successfully.`)
       );
     } catch (error: any) {
+      this.logger.error(
+        `[${ProductController.name}] Error -> ${JSON.stringify(error)}`
+      );
       next(BaseResponse.internalServerError(error.message));
     }
   }
@@ -118,6 +142,11 @@ export class ProductController implements Controller {
     try {
       // Validate request
       const { body } = req;
+      this.logger.trace(
+        `[${
+          ProductController.name
+        } - Create Product] Incoming payload -> ${JSON.stringify(body)}`
+      );
       const isValidRequest = CreateProductRequest.validate(body);
       if (!isValidRequest.success) {
         return next(BaseResponse.unprocessableEntity(isValidRequest.details));
@@ -131,6 +160,9 @@ export class ProductController implements Controller {
 
       return res.send(BaseResponse.created({ message: "Product created" }));
     } catch (error: any) {
+      this.logger.error(
+        `[${ProductController.name}] Error -> ${JSON.stringify(error)}`
+      );
       next(BaseResponse.internalServerError(error.message));
     }
   }
@@ -145,6 +177,11 @@ export class ProductController implements Controller {
     try {
       // Validate request
       const { body, params } = req;
+      this.logger.trace(
+        `[${
+          ProductController.name
+        } - Add additional product] Incoming payload -> ${JSON.stringify(body)}`
+      );
       const isValidRequest = CreateProductAdditionalRequest.validate(body);
       if (!isValidRequest.success) {
         return next(BaseResponse.unprocessableEntity(isValidRequest.details));
@@ -153,7 +190,7 @@ export class ProductController implements Controller {
       // DTO Mapping
       const additionalDTO = AdditionalDTO.from(body);
       additionalDTO.generateID();
-      console.info(additionalDTO.pruneFields());
+
       // Save user
       await this.productService.addProductAdditional(
         params.productId,
@@ -164,6 +201,9 @@ export class ProductController implements Controller {
         BaseResponse.created({ message: "Product additional created" })
       );
     } catch (error: any) {
+      this.logger.error(
+        `[${ProductController.name}] Error -> ${JSON.stringify(error)}`
+      );
       next(BaseResponse.internalServerError(error.message));
     }
   }
@@ -176,6 +216,13 @@ export class ProductController implements Controller {
     try {
       // Validate request
       const { body, params } = req;
+      this.logger.trace(
+        `[${
+          ProductController.name
+        } - Update additional product] Incoming payload -> ${JSON.stringify(
+          body
+        )}`
+      );
       const isValidRequest = UpdateProductAdditionalRequest.validate(body);
       if (!isValidRequest.success) {
         return next(BaseResponse.unprocessableEntity(isValidRequest.details));
@@ -206,6 +253,9 @@ export class ProductController implements Controller {
 
       return res.send(BaseResponse.ok(additional.toPrimitive()));
     } catch (error: any) {
+      this.logger.error(
+        `[${ProductController.name}] Error -> ${JSON.stringify(error)}`
+      );
       next(BaseResponse.internalServerError(error.message));
     }
   }
@@ -218,6 +268,13 @@ export class ProductController implements Controller {
     try {
       // Validate request
       const { params } = req;
+      this.logger.trace(
+        `[${
+          ProductController.name
+        } - Delete additional product] Incoming payload -> ${JSON.stringify(
+          params
+        )}`
+      );
       if (!params.productId || !params.additionalId) {
         return next(BaseResponse.unprocessableEntity("Missing IDs to delete"));
       }
@@ -232,6 +289,9 @@ export class ProductController implements Controller {
         BaseResponse.noContent({ message: "Product additional deleted" })
       );
     } catch (error: any) {
+      this.logger.error(
+        `[${ProductController.name}] Error -> ${JSON.stringify(error)}`
+      );
       next(BaseResponse.internalServerError(error.message));
     }
   }

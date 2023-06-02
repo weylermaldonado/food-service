@@ -9,12 +9,6 @@ const TYPES = {
   UserController: Symbol.for("UserController"),
   User: Symbol.for("User"),
 
-  // Restaurant
-  Restaurant: Symbol.for("Restaurant"),
-  RestaurantController: Symbol.for("RestaurantController"),
-  RestaurantService: Symbol.for("RestaurantService"),
-  RestaurantRepository: Symbol.for("RestaurantRepository"),
-
   // Product
   Product: Symbol.for("Product"),
   ProductController: Symbol.for("ProductController"),
@@ -29,6 +23,7 @@ const TYPES = {
 
   // JWT
   JWT: Symbol.for("JWT"),
+  Logger: Symbol.for("Logger"),
 };
 
 export { TYPES };

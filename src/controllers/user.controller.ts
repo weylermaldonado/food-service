@@ -1,5 +1,9 @@
 import { UserDTO } from "@/dto/user.dto";
-import { Controller, IUserService, Service } from "@/infrastructure/interfaces";
+import {
+  Controller,
+  CustomLogger,
+  IUserService,
+} from "@/infrastructure/interfaces";
 import { BaseResponse } from "@/infrastructure/response/base.response";
 import { TYPES } from "@/infrastructure/types";
 import {
@@ -15,11 +19,17 @@ import { provide } from "inversify-binding-decorators";
 @provide(TYPES.Controller)
 export class UserController implements Controller {
   constructor(
-    @inject(TYPES.Service) private readonly userService: IUserService
+    @inject(TYPES.Service) private readonly userService: IUserService,
+    @inject(TYPES.Logger) private readonly logger: CustomLogger
   ) {}
   async get(req: Request, res: Response, next: NextFunction) {
     try {
       const { body } = req;
+      this.logger.trace(
+        `[${UserController.name} - Login] Incoming payload -> ${JSON.stringify(
+          body
+        )}`
+      );
       const isValidRequest = LoginUserRequest.validate(body);
       if (!isValidRequest.success) {
         return next(BaseResponse.unprocessableEntity(isValidRequest.details));
@@ -47,6 +57,9 @@ export class UserController implements Controller {
 
       return res.send(BaseResponse.ok({ token: jwt }));
     } catch (error: any) {
+      this.logger.error(
+        `[${UserController.name}] Error -> ${JSON.stringify(error)}`
+      );
       next(BaseResponse.internalServerError(error.message));
     }
   }
@@ -54,6 +67,11 @@ export class UserController implements Controller {
     try {
       // Validate request
       const { body } = req;
+      this.logger.trace(
+        `[${UserController.name} - Signup] Incoming payload -> ${JSON.stringify(
+          body
+        )}`
+      );
       const isValidRequest = CreateUserRequest.validate(body);
       if (!isValidRequest.success) {
         return next(BaseResponse.unprocessableEntity(isValidRequest.details));
@@ -69,6 +87,9 @@ export class UserController implements Controller {
 
       return res.send(BaseResponse.created({ message: "User created" }));
     } catch (error: any) {
+      this.logger.error(
+        `[${UserController.name}] Error -> ${JSON.stringify(error)}`
+      );
       next(BaseResponse.internalServerError(error.message));
     }
   }
@@ -76,6 +97,14 @@ export class UserController implements Controller {
     try {
       const { body } = req;
       const { userId } = req.params;
+      this.logger.trace(
+        `[${
+          UserController.name
+        } - Update User] Incoming payload -> ${JSON.stringify({
+          ...body,
+          userId,
+        })}`
+      );
       // Validate request
       const isValidRequest = UpdateUserRequest.validate(body);
       if (!isValidRequest.success) {
@@ -90,6 +119,9 @@ export class UserController implements Controller {
 
       return res.send(BaseResponse.ok({ message: "User deactivated" }));
     } catch (error: any) {
+      this.logger.error(
+        `[${UserController.name}] Error -> ${JSON.stringify(error)}`
+      );
       next(BaseResponse.internalServerError(error.message));
     }
   }
@@ -97,6 +129,11 @@ export class UserController implements Controller {
   async createSuperUser(req: Request, res: Response, next: NextFunction) {
     try {
       const { body } = req;
+      this.logger.trace(
+        `[${
+          UserController.name
+        } - Create super user] Incoming payload -> ${JSON.stringify(body)}`
+      );
       // Validate request
       const isValidRequest = CreateUserRequest.validate(body);
       if (!isValidRequest.success) {
@@ -113,6 +150,9 @@ export class UserController implements Controller {
 
       return res.send(BaseResponse.ok({ message: "SuperUser created" }));
     } catch (error: any) {
+      this.logger.error(
+        `[${UserController.name}] Error -> ${JSON.stringify(error)}`
+      );
       next(BaseResponse.internalServerError(error.message));
     }
   }
