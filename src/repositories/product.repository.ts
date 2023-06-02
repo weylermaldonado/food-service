@@ -3,6 +3,7 @@ import { TYPES } from "@/infrastructure/types";
 import { inject, injectable } from "inversify";
 import { Model } from "mongoose";
 import BaseRepository from "./base.repository";
+import { OrderValidation } from "@/shared/types";
 @injectable()
 class ProductRepository extends BaseRepository {
   constructor(@inject(TYPES.Product) private readonly product: Model<any>) {
@@ -45,6 +46,13 @@ class ProductRepository extends BaseRepository {
       },
       { new: true }
     );
+  }
+
+  async findManyProductsWithAdditional(data: OrderValidation) {
+    return this.product.find({
+      uuid: { $in: data.ids },
+      available: true,
+    });
   }
 }
 export default ProductRepository;

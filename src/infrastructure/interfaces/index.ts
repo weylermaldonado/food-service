@@ -1,3 +1,4 @@
+import { OrderValidation } from "@/shared/types";
 import { JWTToken } from "../auth/jwt.token";
 
 export interface Service {
@@ -83,6 +84,7 @@ export interface IProductRepository extends Repository {
     productUUID: string,
     additionalUUID: string
   ): Promise<any>;
+  findManyProductsWithAdditional(data: OrderValidation): Promise<any>;
 }
 
 export interface IProductController extends Controller {
@@ -98,4 +100,17 @@ export interface CustomLogger {
   warn(msg: any, meta?: any): void;
   error(msg: any, meta?: any): void;
   fatal(msg: any, meta?: any): void;
+}
+
+export interface IOrderService extends Service {
+  validateOrder(data: OrderValidation): Promise<any>;
+  cancelOrder(filter: any, entity: any): Promise<any>;
+}
+
+export interface IOrderController extends Controller {
+  validateOrder(...args: any): Promise<any>;
+}
+
+export interface IOrderRepository extends Repository {
+  cancelOrder(filter: any, entity: any): Promise<any>;
 }

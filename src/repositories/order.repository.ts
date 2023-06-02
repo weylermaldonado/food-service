@@ -9,5 +9,11 @@ class OrderRepository extends BaseRepository {
     super(order);
     order = this.order;
   }
+
+  async cancelOrder(filter: any, entity: any): Promise<any> {
+    return await this.order.findOneAndUpdate(filter, entity, {
+      new: true,
+    });
+  }
 }
 export default OrderRepository;

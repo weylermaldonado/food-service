@@ -3,6 +3,7 @@ import helmet from "helmet";
 import ErrorMiddleware from "@/middlewares/error.middleware";
 import {
   Controller,
+  IOrderController,
   IProductController,
   IUserController,
 } from "@/infrastructure/interfaces";
@@ -12,7 +13,7 @@ import orderRoutes from "./order.routes";
 export default function Router(
   UserController: IUserController,
   ProductController: IProductController,
-  OrderController: Controller
+  OrderController: IOrderController
 ): express.Router {
   const router = express.Router();
   const apiRoutes = express.Router();

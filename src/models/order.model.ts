@@ -1,6 +1,68 @@
-import { ORDER_STATUS } from "@/shared/enums";
+import {
+  ORDER_STATUS,
+  PAYMENT_TYPES,
+  PRODUCT_CATEGORIES,
+} from "@/shared/enums";
 import { Schema, model } from "mongoose";
-import { ProductSchema } from "./product.model";
+
+const AdditionalOrderSchema = new Schema(
+  {
+    uuid: {
+      type: String,
+      required: [true, "Missing uuid"],
+      index: true,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    price: {
+      type: Number,
+      required: true,
+    },
+    available: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
+
+const ProductOrderSchema = new Schema(
+  {
+    uuid: {
+      type: String,
+      required: [true, "Missing uuid"],
+
+      index: true,
+    },
+    img: {
+      type: String,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    price: {
+      type: Number,
+      required: true,
+    },
+    category: {
+      type: String,
+      enum: PRODUCT_CATEGORIES,
+    },
+    notes: {
+      type: String,
+    },
+    available: {
+      type: Boolean,
+      required: true,
+      default: true,
+    },
+    additional: [AdditionalOrderSchema],
+  },
+  { timestamps: true }
+);
 
 const OrderSchema = new Schema(
   {
@@ -10,15 +72,15 @@ const OrderSchema = new Schema(
       unique: true,
       index: true,
     },
-    restaurant_id: {
-      type: String,
-      required: true,
-    },
     user_id: {
       type: String,
       required: true,
     },
-    products: [ProductSchema],
+    products: [ProductOrderSchema],
+    payment_method: {
+      type: String,
+      enum: PAYMENT_TYPES,
+    },
     total: {
       type: Number,
       required: true,

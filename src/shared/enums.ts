@@ -31,3 +31,21 @@ export enum HttpStatusCode {
   UNPROCESSABLE_ENTITY = 422,
   INTERNAL_SERVER = 500,
 }
+
+export enum TIPS_PERCENTAGE {
+  FIFTEEN_PERCENT = 0.15,
+  TEN_PERCENT = 0.1,
+  FIVE_PERCENT = 0.05,
+  NONE = 0,
+}
+
+export enum PAYMENT_TYPES {
+  UPON_DELIVERY = "upon_delivery",
+  CREDIT_CARD = "credit_card",
+}
+
+// 24HRS Format
+export enum SERVICE_WINDOW {
+  OPEN_HOUR = 10,
+  CLOSE_HOUR = 18,
+}
