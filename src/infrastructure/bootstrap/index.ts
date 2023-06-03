@@ -37,4 +37,15 @@ export class SharedBootstrap implements StartModule {
       );
     }
   }
+
+  async initTest(): Promise<void> {
+    try {
+      // independency injection
+      new AppDependencies().register(AppContainer);
+    } catch (error) {
+      console.error(
+        `[${SharedBootstrap.name}] error starting module --> ${error}`
+      );
+    }
+  }
 }

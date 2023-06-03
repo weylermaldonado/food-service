@@ -20,9 +20,6 @@ const UserSchema = new Schema(
       type: String,
       required: true,
     },
-    restaurant_id: {
-      type: String,
-    },
     user_role: {
       type: String,
       enum: USER_ROLE,

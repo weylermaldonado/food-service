@@ -228,14 +228,11 @@ export class ProductController implements Controller {
         return next(BaseResponse.unprocessableEntity(isValidRequest.details));
       }
 
-      // DTO Mapping
-      const additionalDTO = AdditionalDTO.from(body);
-
       // Save additional
       let result = await this.productService.updateProductAdditional(
         params.productId,
         params.additionalId,
-        additionalDTO.pruneFields()
+        body
       );
 
       if (!result) {

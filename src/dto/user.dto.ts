@@ -13,6 +13,10 @@ export class UserDTO {
     private uuid?: string
   ) {}
 
+  getName() {
+    return this.name;
+  }
+
   setRole(role: USER_ROLE) {
     this.role = role;
   }

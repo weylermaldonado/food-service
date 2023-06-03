@@ -47,5 +47,5 @@ export enum PAYMENT_TYPES {
 // 24HRS Format
 export enum SERVICE_WINDOW {
   OPEN_HOUR = 10,
-  CLOSE_HOUR = 18,
+  CLOSE_HOUR = 19,
 }

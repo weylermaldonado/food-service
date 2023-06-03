@@ -34,7 +34,7 @@ services:
     networks:
       - repository-service
     logging:
-      driver: "json-file"
+      driver: "none"
 networks:
   repository-service:
     driver: bridge
